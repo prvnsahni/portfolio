@@ -19,6 +19,10 @@ export default async function Image({ params }: { params: Promise<{ slug: string
     eyebrow: note ? `Study note · ${note.tech}` : "Study note",
     title: note?.title ?? "Study note",
     subtitle: note?.summary ?? "",
-    footerRight: note ? `updated ${note.updated}` : undefined,
+    badge: note
+      ? note.kind === "production"
+        ? { label: "From production", tone: "good" }
+        : { label: "Learning notes", tone: "warn" }
+      : undefined,
   });
 }

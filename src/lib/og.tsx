@@ -23,6 +23,8 @@ const colors = {
   muted: "#9aa3b2",
   accent: "#5eead4",
   line: "#262b36",
+  good: "#34d399",
+  warn: "#fbbf24",
 };
 
 // Fonts don't depend on request data, so read them once at module scope.
@@ -38,6 +40,9 @@ function clamp(text: string, max: number) {
   return `${text.slice(0, max - 1).trimEnd()}…`;
 }
 
+/** A coloured pill shown at the top-right, echoing KindBadge. */
+export type OgBadge = { label: string; tone: "good" | "warn" };
+
 export type OgContent = {
   /** Small uppercase label above the title (e.g. "Case study"). */
   eyebrow: string;
@@ -45,11 +50,13 @@ export type OgContent = {
   title: string;
   /** One-line supporting sentence, clamped to keep the layout tidy. */
   subtitle: string;
-  /** Optional mono text shown at the bottom-right (e.g. a tech list). */
+  /** Optional mono text shown at the bottom-right (e.g. a headline metric). */
   footerRight?: string;
+  /** Optional coloured badge shown at the top-right. */
+  badge?: OgBadge;
 };
 
-export function renderOgImage({ eyebrow, title, subtitle, footerRight }: OgContent) {
+export function renderOgImage({ eyebrow, title, subtitle, footerRight, badge }: OgContent) {
   return new ImageResponse(
     (
       <div
@@ -78,27 +85,45 @@ export function renderOgImage({ eyebrow, title, subtitle, footerRight }: OgConte
           }}
         />
 
-        {/* Eyebrow */}
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <div
-            style={{
-              width: 14,
-              height: 14,
-              borderRadius: 3,
-              background: colors.accent,
-              marginRight: 16,
-            }}
-          />
-          <div
-            style={{
-              fontFamily: "GeistMono",
-              fontSize: 24,
-              letterSpacing: 4,
-              color: colors.accent,
-            }}
-          >
-            {eyebrow.toUpperCase()}
+        {/* Eyebrow, with an optional badge pill on the right */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <div
+              style={{
+                width: 14,
+                height: 14,
+                borderRadius: 3,
+                background: colors.accent,
+                marginRight: 16,
+              }}
+            />
+            <div
+              style={{
+                fontFamily: "GeistMono",
+                fontSize: 24,
+                letterSpacing: 4,
+                color: colors.accent,
+              }}
+            >
+              {eyebrow.toUpperCase()}
+            </div>
           </div>
+          {badge ? (
+            <div
+              style={{
+                display: "flex",
+                fontFamily: "GeistMono",
+                fontSize: 22,
+                color: colors[badge.tone],
+                background: `${colors[badge.tone]}26`,
+                border: `1px solid ${colors[badge.tone]}59`,
+                borderRadius: 999,
+                padding: "8px 20px",
+              }}
+            >
+              {badge.label}
+            </div>
+          ) : null}
         </div>
 
         {/* Title + subtitle */}

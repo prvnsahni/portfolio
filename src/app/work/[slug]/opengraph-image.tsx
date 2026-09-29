@@ -15,10 +15,12 @@ export default async function Image({ params }: { params: Promise<{ slug: string
   const { slug } = await params;
   const project = getProject(slug);
 
+  const metric = project?.metrics[0];
+
   return renderOgImage({
     eyebrow: "Case study",
     title: project?.name ?? "Case study",
     subtitle: project?.subtitle ?? "",
-    footerRight: project?.stack.slice(0, 3).join(" · "),
+    footerRight: metric ? `${metric.value} ${metric.label}` : undefined,
   });
 }
