@@ -181,6 +181,7 @@ export const projects: Project[] = [
     lessons: [
       "Automated tests on the form logic would have caught the regressions earlier than review alone.",
     ],
+    demo: { href: "/work/qbench/form-demo", label: "Try the config-driven form demo" },
     diagram:
       "Architecture diagram. The v0-generated UI is ported into a Next.js app on the Pages Router with server-side and static rendering, wired through a Redux store to a REST API. Separately, the AI Sync chat opens a WebSocket to the backend and streams replies back, and file uploads request a pre-signed URL from the backend and then upload directly to Amazon S3.",
   },
@@ -327,6 +328,7 @@ export const projects: Project[] = [
     ],
     results: ["Admins reconfigure the portal without developer involvement."],
     lessons: ["A schema for the configuration, validated on load, would make the engine safer to extend."],
+    demo: { href: "/work/qbench/form-demo", label: "Try the config-driven form demo" },
     publicLink: { href: "https://qbench.com/products/customer-web-portal", label: "Qbench customer web portal (public page)" },
     diagram:
       "Architecture diagram. Backend configuration drives a config-driven engine that renders dynamic forms and tables without code changes. A separate billing module uses Stripe Checkout for subscriptions, payments and invoices.",

@@ -41,6 +41,14 @@ export const notes: Note[] = [
     summary: "How OnPush change detection and trackBy (or @for track) cut wasted work in list-heavy screens.",
     updated: "2026-09-29",
   },
+  {
+    slug: "config-driven-forms",
+    title: "How a config-driven form engine works",
+    tech: "Architecture",
+    kind: "production",
+    summary: "Describe a form as data, then render, validate and show or hide fields from that config — with a live editor you can try.",
+    updated: "2026-09-29",
+  },
 ];
 
 export const techOrder: Note["tech"][] = ["Angular", "React", "Next.js", "Performance", "TypeScript", "RxJS", "Architecture"];
