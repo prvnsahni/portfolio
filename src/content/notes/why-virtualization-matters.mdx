@@ -1,0 +1,32 @@
+On a private-equity research platform I worked on, one table held more than 17,000 rows out of 20,000+ records. The first version loaded every page up front. It took a long time to become usable and froze after users loaded several files.
+
+## Why it was slow
+
+Two separate costs were adding up:
+
+1. **Data cost.** Fetching and parsing every row before showing anything.
+2. **DOM cost.** Every row becomes real DOM nodes. 17,000 rows × 10 columns is 170,000 cells for the browser to lay out, style and keep in memory, even though a screen shows about 30 rows.
+
+Fixing only one of these leaves the other in place.
+
+## The two-layer fix
+
+**Layer 1: fetch only what's needed.** Server-side pagination returns one page at a time. If the user jumps to a page they haven't seen, that page is fetched on demand. Fetched pages are cached, so scrolling back costs nothing.
+
+**Layer 2: render only what's visible.** Virtualization keeps a small window of rows in the DOM and swaps their content as you scroll. A spacer element keeps the scrollbar the right size.
+
+AG-Grid virtualizes rows by default. Its infinite row model adds layer 1: it asks your datasource for blocks of rows as the user scrolls, and keeps fetched blocks in a cache.
+
+## Result
+
+Load time dropped by about 8–10 seconds, and the freezes stopped.
+
+## Try it yourself
+
+The [grid demo](/work/ddmind/grid-demo) renders 17,000 synthetic rows both ways and measures the difference in your browser.
+
+## Things to watch
+
+- Row height must be predictable (fixed, or measured) for smooth virtual scrolling.
+- Sorting and filtering must move to the server once data is paged, or the results will only cover the loaded pages.
+- Keep the cache bounded, or you slowly rebuild the memory problem.

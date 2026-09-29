@@ -1,0 +1,45 @@
+Angular's default change detection checks every component in the tree after any event, timer or HTTP response. In a screen with many tabs, tables and charts, most of that checking finds nothing changed.
+
+## OnPush
+
+```ts
+@Component({
+  selector: 'app-metric-table',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './metric-table.component.html',
+})
+export class MetricTableComponent {
+  @Input() rows: MetricRow[] = [];
+}
+```
+
+With `OnPush`, Angular checks this component only when:
+
+- an `@Input` gets a **new reference**,
+- an event fires inside the component,
+- an `async` pipe emits, or
+- you call `markForCheck()`.
+
+The catch: mutating an input array in place (`rows.push(x)`) is invisible to `OnPush`. Create a new array instead (`rows = [...rows, x]`). Immutable updates and `OnPush` go together.
+
+## trackBy and @for track
+
+When a list re-renders, Angular needs to know which items are the same as before. Without an identity, it can tear down and recreate DOM for every item.
+
+```html
+@for (row of rows; track row.id) {
+  <app-metric-row [row]="row" />
+}
+```
+
+In older syntax, the same thing is `*ngFor="let row of rows; trackBy: trackById"`.
+
+## Where I used them
+
+During an Angular v16 → v20 upgrade on a data-heavy research platform, I moved templates to the new control flow and applied `OnPush` and `trackBy` on list-heavy components, alongside standalone components and removing unused dependencies.
+
+## Checklist
+
+- Default new presentational components to `OnPush`.
+- Update inputs immutably.
+- Always `track` by a stable id, never by index when items can reorder.

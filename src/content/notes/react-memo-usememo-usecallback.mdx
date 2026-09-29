@@ -1,0 +1,25 @@
+React re-renders a component whenever its parent re-renders, even if its props did not change. Usually that's fine. It becomes a problem when the child is expensive: a big table, a chart, a long form.
+
+## The three tools
+
+- **`React.memo(Component)`** skips re-rendering a component when its props are shallowly equal to last time.
+- **`useCallback(fn, deps)`** returns the *same* function between renders until a dependency changes.
+- **`useMemo(() => value, deps)`** returns the same computed value until a dependency changes.
+
+`React.memo` compares props with `Object.is`. A function or object created inline is a new reference on every render, so it defeats `React.memo` completely. That's why the three tools usually appear together.
+
+## See it happen
+
+<MemoDemo />
+
+## When I reach for them
+
+On a contract-management app built mostly of large forms and data tables, I used `React.memo`, `useMemo` and `useCallback` to stop components re-rendering when nothing they depend on had changed.
+
+## When not to bother
+
+- Cheap components. Memoization has its own cost: comparing props on every render.
+- Props that change every time anyway.
+- Before measuring. Open React DevTools' Profiler first and find the component that actually costs time.
+
+> Rule of thumb: memoize the expensive child, stabilize what you pass to it, and measure before and after.
