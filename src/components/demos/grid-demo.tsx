@@ -75,7 +75,11 @@ function Cell({ row, col }: { row: FinRow; col: (typeof columns)[number] }) {
   const v = row[col.key];
   const text = typeof v === "number" && col.format ? col.format(v) : String(v);
   const tone = col.key === "change" ? ((v as number) >= 0 ? "text-good" : "text-bad") : "";
-  return <div className={`truncate px-3 ${col.align === "right" ? "text-right font-mono" : ""} ${tone}`}>{text}</div>;
+  return (
+    <div role="cell" className={`truncate px-3 ${col.align === "right" ? "text-right font-mono" : ""} ${tone}`}>
+      {text}
+    </div>
+  );
 }
 
 function Row({ row, style }: { row: FinRow; style?: React.CSSProperties }) {
@@ -94,7 +98,11 @@ function Row({ row, style }: { row: FinRow; style?: React.CSSProperties }) {
 
 function SkeletonRow({ style }: { style?: React.CSSProperties }) {
   return (
-    <div className="flex items-center gap-3 border-b border-line/60 px-3" style={{ height: ROW_HEIGHT, ...style }}>
+    <div
+      aria-hidden="true"
+      className="flex items-center gap-3 border-b border-line/60 px-3"
+      style={{ height: ROW_HEIGHT, ...style }}
+    >
       <div className="h-3 w-full animate-pulse rounded bg-surface-2" />
     </div>
   );
@@ -102,16 +110,18 @@ function SkeletonRow({ style }: { style?: React.CSSProperties }) {
 
 function Header() {
   return (
-    <div
-      role="row"
-      className="sticky top-0 z-10 grid items-center border-b border-line bg-surface-2 font-mono text-[11px] uppercase tracking-wide text-muted"
-      style={{ gridTemplateColumns: gridCols, height: ROW_HEIGHT }}
-    >
-      {columns.map((c) => (
-        <div key={c.key} className={`px-3 ${c.align === "right" ? "text-right" : ""}`}>
-          {c.label}
-        </div>
-      ))}
+    <div role="rowgroup">
+      <div
+        role="row"
+        className="sticky top-0 z-10 grid items-center border-b border-line bg-surface-2 font-mono text-[11px] uppercase tracking-wide text-muted"
+        style={{ gridTemplateColumns: gridCols, height: ROW_HEIGHT }}
+      >
+        {columns.map((c) => (
+          <div key={c.key} role="columnheader" className={`px-3 ${c.align === "right" ? "text-right" : ""}`}>
+            {c.label}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -120,11 +130,11 @@ function Header() {
 
 function NaiveGrid({ rows }: { rows: FinRow[] }) {
   return (
-    <>
+    <div role="rowgroup">
       {rows.map((r) => (
         <Row key={r.id} row={r} />
       ))}
-    </>
+    </div>
   );
 }
 
@@ -173,7 +183,7 @@ function OptimizedGrid({
   }, [firstPage, lastPage, onFirstRows, onRequest]);
 
   return (
-    <div style={{ height: virtualizer.getTotalSize(), position: "relative" }}>
+    <div role="rowgroup" style={{ height: virtualizer.getTotalSize(), position: "relative" }}>
       {items.map((item) => {
         const page = cache.current.get(Math.floor(item.index / PAGE_SIZE));
         const row = page?.[item.index % PAGE_SIZE];
@@ -276,15 +286,27 @@ export function GridDemo() {
       </div>
 
       {/* Grid */}
-      <div ref={scrollRef} role="table" aria-label="Synthetic financial data" className="overflow-auto" style={{ height: VIEW_HEIGHT }}>
+      <div
+        ref={scrollRef}
+        tabIndex={0}
+        role="group"
+        aria-label="Synthetic financial data, scrollable"
+        className="overflow-auto rounded-sm focus-visible:outline-2 focus-visible:outline-accent"
+        style={{ height: VIEW_HEIGHT }}
+      >
         <div style={{ minWidth: MIN_WIDTH }}>
-          <Header />
+          <div role="table" aria-label="Synthetic financial data">
+            <Header />
+            {strategy === "naive" && naiveRows && <NaiveGrid rows={naiveRows} />}
+            {strategy === "optimized" && (
+              <OptimizedGrid key={runId} scrollRef={scrollRef} onFirstRows={onFirstRows} onRequest={onRequest} />
+            )}
+          </div>
           {!strategy && (
             <p className="p-8 text-center text-sm text-muted">Choose a strategy above. Try the first one, then the second, and compare.</p>
           )}
-          {strategy === "naive" && (naiveRows ? <NaiveGrid rows={naiveRows} /> : <p className="p-8 text-center text-sm text-muted">Fetching 17,000 rows…</p>)}
-          {strategy === "optimized" && (
-            <OptimizedGrid key={runId} scrollRef={scrollRef} onFirstRows={onFirstRows} onRequest={onRequest} />
+          {strategy === "naive" && !naiveRows && (
+            <p className="p-8 text-center text-sm text-muted">Fetching 17,000 rows…</p>
           )}
         </div>
       </div>
