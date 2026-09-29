@@ -25,6 +25,12 @@ export type Project = {
   lessons: string[];
   demo?: { href: string; label: string };
   publicLink?: { href: string; label: string };
+  /**
+   * Plain-words description of the case study's architecture diagram, used as
+   * the SVG's accessible name. Its presence renders the Architecture section;
+   * the diagram itself is selected by slug in src/components/diagrams.
+   */
+  diagram?: string;
 };
 
 export const projects: Project[] = [
@@ -110,6 +116,8 @@ export const projects: Project[] = [
       "With Angular 17+, @defer with prefetch-on-idle can handle tab components, and prefetching only the next likely tabs would cut unneeded calls.",
     ],
     demo: { href: "/work/ddmind/grid-demo", label: "Try the 17,000-row grid demo" },
+    diagram:
+      "Architecture diagram. The browser shows a virtualized grid that renders only the visible rows and reads pages from a client-side page cache; on a cache miss the cache fetches one page from the paged API. Separately, the main tab content loads first, then each tab's data is prefetched in the background after a delay and kept in a tab cache, so switching to a tab reads from the cache instead of fetching again.",
   },
   {
     slug: "ccm",
@@ -173,6 +181,8 @@ export const projects: Project[] = [
     lessons: [
       "Automated tests on the form logic would have caught the regressions earlier than review alone.",
     ],
+    diagram:
+      "Architecture diagram. The v0-generated UI is ported into a Next.js app on the Pages Router with server-side and static rendering, wired through a Redux store to a REST API. Separately, the AI Sync chat opens a WebSocket to the backend and streams replies back, and file uploads request a pre-signed URL from the backend and then upload directly to Amazon S3.",
   },
   {
     slug: "paper-tiger",
@@ -228,6 +238,8 @@ export const projects: Project[] = [
     lessons: [
       "Next time I would extract the shared hooks and components into a small internal package from day one, and add tests before the codebase grows.",
     ],
+    diagram:
+      "Architecture diagram. Five modules — Outliner, Reader, Explorer, Builder and Writer — feed a single Redux store, which reads and writes each paper's roughly 2 MB of JSON in Google Cloud Storage through signed URLs.",
   },
   {
     slug: "block-power",
@@ -271,6 +283,8 @@ export const projects: Project[] = [
     ],
     results: ["Delivered the full frontend for about 250 users."],
     lessons: ["Next time I would add automated tests around role permissions, so a change for one user type cannot leak features to another."],
+    diagram:
+      "Architecture diagram. One React app uses role-based access to route each user type to its own features: ambassadors see points, referrals and voting, while other user types each see their own features, with no separate admin app.",
   },
   {
     slug: "qbench",
@@ -314,6 +328,8 @@ export const projects: Project[] = [
     results: ["Admins reconfigure the portal without developer involvement."],
     lessons: ["A schema for the configuration, validated on load, would make the engine safer to extend."],
     publicLink: { href: "https://qbench.com/products/customer-web-portal", label: "Qbench customer web portal (public page)" },
+    diagram:
+      "Architecture diagram. Backend configuration drives a config-driven engine that renders dynamic forms and tables without code changes. A separate billing module uses Stripe Checkout for subscriptions, payments and invoices.",
   },
 ];
 

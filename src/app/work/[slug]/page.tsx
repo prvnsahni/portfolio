@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ArchitectureDiagram } from "@/components/diagrams";
 import { ButtonLink, Container, Eyebrow, Tag } from "@/components/ui";
 import { getProject, projects } from "@/content/projects";
 
@@ -34,9 +35,10 @@ export default async function ProjectPage(props: PageProps<"/work/[slug]">) {
   const index = projects.findIndex((p) => p.slug === slug);
   const next = projects[(index + 1) % projects.length];
 
-  const toc = [
+  const toc: [string, string][] = [
     ["problem", "Problem"],
     ["constraints", "Constraints"],
+    ...(project.diagram ? ([["architecture", "Architecture"]] as [string, string][]) : []),
     ["approach", "What I built"],
     ["decisions", "Decisions and trade-offs"],
     ["results", "Results"],
@@ -121,6 +123,14 @@ export default async function ProjectPage(props: PageProps<"/work/[slug]">) {
               ))}
             </ul>
           </Section>
+
+          {project.diagram && (
+            <Section id="architecture" title="Architecture">
+              <div className="rounded-2xl border border-line bg-surface/40 p-5 sm:p-6">
+                <ArchitectureDiagram slug={project.slug} label={project.diagram} />
+              </div>
+            </Section>
+          )}
 
           <Section id="approach" title="What I built">
             <div className="space-y-6">
