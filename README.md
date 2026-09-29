@@ -60,4 +60,5 @@ Every push to `main` redeploys the site.
 - [x] Grid demo (17,000 rows, naive vs paged + virtualized)
 - [ ] Phase 3: 3D data-portrait hero (React Three Fiber), static fallback on mobile and reduced motion
 - [ ] More notes: Next.js App Router, RxJS, NgRx, Angular Signals (learning), Web Vitals
-- [ ] Open Graph image, analytics
+- [x] Open Graph / Twitter images (dynamic, per page)
+- [ ] Analytics
