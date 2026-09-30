@@ -1,0 +1,11 @@
+{
+  "measuredAt": "2026-09-29",
+  "preset": "desktop",
+  "note": "Update these from the Lighthouse CI report (the .lighthouseci artifact from GitHub Actions). Only paste numbers that were actually measured.",
+  "routes": [
+    { "path": "/", "performance": 100, "accessibility": 100, "bestPractices": 100, "seo": 100 },
+    { "path": "/work/ddmind", "performance": 100, "accessibility": 100, "bestPractices": 100, "seo": 100 },
+    { "path": "/work/ddmind/grid-demo", "performance": 100, "accessibility": 100, "bestPractices": 100, "seo": 100 },
+    { "path": "/notes", "performance": 100, "accessibility": 100, "bestPractices": 100, "seo": 100 }
+  ]
+}

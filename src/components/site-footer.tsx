@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { site } from "@/lib/site";
 
 export function SiteFooter() {
@@ -5,7 +6,11 @@ export function SiteFooter() {
     <footer className="border-t border-line/70">
       <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-8 text-sm text-muted sm:flex-row sm:items-center sm:justify-between sm:px-6">
         <p>
-          © {new Date().getFullYear()} {site.name}. Built with Next.js, TypeScript and Tailwind.
+          © {new Date().getFullYear()} {site.name}. Built with Next.js, TypeScript and Tailwind.{" "}
+          <Link href="/about/this-site" className="underline underline-offset-4 hover:text-text">
+            How this site is built
+          </Link>
+          .
         </p>
         <div className="flex gap-4">
           <a href={`mailto:${site.email}`} className="hover:text-text">Email</a>

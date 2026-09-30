@@ -23,7 +23,7 @@ export type Project = {
   decisions: Decision[];
   results: string[];
   lessons: string[];
-  demo?: { href: string; label: string };
+  demos?: { href: string; label: string }[];
   publicLink?: { href: string; label: string };
   /**
    * Plain-words description of the case study's architecture diagram, used as
@@ -115,7 +115,10 @@ export const projects: Project[] = [
       "Record Lighthouse and Web Vitals numbers before and after every optimization. I checked performance with Lighthouse and DevTools but did not keep the scores.",
       "With Angular 17+, @defer with prefetch-on-idle can handle tab components, and prefetching only the next likely tabs would cut unneeded calls.",
     ],
-    demo: { href: "/work/ddmind/grid-demo", label: "Try the 17,000-row grid demo" },
+    demos: [
+      { href: "/work/ddmind/grid-demo", label: "Try the 17,000-row grid demo" },
+      { href: "/work/ddmind/chat-demo", label: "Try the streaming chat demo" },
+    ],
     diagram:
       "Architecture diagram. The browser shows a virtualized grid that renders only the visible rows and reads pages from a client-side page cache; on a cache miss the cache fetches one page from the paged API. Separately, the main tab content loads first, then each tab's data is prefetched in the background after a delay and kept in a tab cache, so switching to a tab reads from the cache instead of fetching again.",
   },
@@ -181,7 +184,7 @@ export const projects: Project[] = [
     lessons: [
       "Automated tests on the form logic would have caught the regressions earlier than review alone.",
     ],
-    demo: { href: "/work/qbench/form-demo", label: "Try the config-driven form demo" },
+    demo: [{ href: "/work/qbench/form-demo", label: "Try the config-driven form demo" },{ href: "/work/ddmind/chat-demo", label: "Try the streaming chat demo" }],
     diagram:
       "Architecture diagram. The v0-generated UI is ported into a Next.js app on the Pages Router with server-side and static rendering, wired through a Redux store to a REST API. Separately, the AI Sync chat opens a WebSocket to the backend and streams replies back, and file uploads request a pre-signed URL from the backend and then upload directly to Amazon S3.",
   },
