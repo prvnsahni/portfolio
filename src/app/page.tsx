@@ -5,7 +5,7 @@ import { projects } from "@/content/projects";
 import { site } from "@/lib/site";
 
 const stats = [
-  { value: "7 yrs", label: "frontend, Angular and React" },
+  { value: "7 yrs", label: "Frontend: Angular and React/Next.js" },
   { value: "8–10 s", label: "faster load on a 20,000-record grid" },
   { value: "3", label: "React products built solo, 0 to prod" },
   { value: "6+", label: "engineers mentored" },

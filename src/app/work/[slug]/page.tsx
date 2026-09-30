@@ -73,9 +73,13 @@ export default async function ProjectPage(props: PageProps<"/work/[slug]">) {
             <Tag key={s}>{s}</Tag>
           ))}
         </div>
-        {(project.demo || project.publicLink) && (
+        {(project.demos?.length || project.publicLink) && (
           <div className="mt-8 flex flex-wrap gap-3">
-            {project.demo && <ButtonLink href={project.demo.href}>{project.demo.label}</ButtonLink>}
+            {project.demos?.map((d) => (
+              <ButtonLink key={d.href} href={d.href}>
+                {d.label}
+              </ButtonLink>
+            ))}
             {project.publicLink && (
               <ButtonLink href={project.publicLink.href} variant="ghost" external>
                 {project.publicLink.label} ↗
