@@ -1,0 +1,58 @@
+Some products need a different form for every customer. On Qbench, a super admin decided which columns, fields and form order each lab saw, and the portal rendered them without a code change. On CCM, contract forms had fields that only appeared once you answered an earlier question. Building a bespoke screen per customer does not scale. Describing the form as **data** does.
+
+## The idea
+
+Split the form into two halves:
+
+- A **config** — plain data that says what fields exist, in what order, of what type, with what rules.
+- An **engine** — a small, pure module that turns that config into everything the UI needs: which fields are visible, what a dropdown's options are, which values are invalid, and the final collected result.
+
+The renderer on top is thin. All the interesting logic lives in the engine, where it is easy to read and to test.
+
+## The config
+
+A field is just an object:
+
+```json
+{
+  "name": "priority",
+  "label": "Priority",
+  "type": "select",
+  "required": true,
+  "options": [
+    { "value": "standard", "label": "Standard" },
+    { "value": "rush", "label": "Rush" }
+  ]
+}
+```
+
+The supported types are text, number, email, select, checkbox, date and textarea. Numbers take `min` and `max`; text-like fields take `minLength` and `maxLength`. The array order **is** the render order.
+
+## Conditional fields
+
+Two patterns cover almost everything.
+
+**Show or hide** with `visibleWhen`: a "Reason for rush" textarea that only appears when priority is Rush.
+
+```json
+{ "name": "rushReason", "type": "textarea",
+  "visibleWhen": { "field": "priority", "equals": "rush" } }
+```
+
+**Dependent options** with `optionsWhen`: a dropdown whose choices come from another field. Chain them and you get country → state → city — each list appears only once the one above it is chosen.
+
+The engine treats a hidden field as absent: it is skipped in validation and left out of the submitted result. Visibility is evaluated through the chain, so if the country changes and the state clears, the city hides too.
+
+## Try it
+
+Edit the JSON and the form re-renders live. Switch presets, toggle a checkbox to reveal a field, and submit to see the collected values. Nothing is sent anywhere.
+
+<ConfigFormDemo />
+
+## Why this holds up
+
+- **One engine, every form.** New forms are new data, not new code — which is the whole point for a SaaS product.
+- **Pure and typed.** The engine has no React and no DOM, so its rules can be unit-tested directly.
+- **Validate the config too.** Editing raw JSON is easy to get wrong, so the parser returns a clear message instead of throwing, and the last valid form keeps rendering.
+
+The trade-off is a more complex engine up front in exchange for admins customising the form themselves. On a product with many customers, that trade is worth making.
