@@ -12,7 +12,7 @@ const MAX_BYTES = 10 * 1024 * 1024; // 10 MB is plenty for a PDF resume.
  * Client-upload endpoint for resumes.
  *
  * The browser never gets a write token up front. Instead `upload()` (in the
- * ResumeUploader component) POSTs here first; we verify the admin secret, and
+ * ResumeManager component) POSTs here first; we verify the admin secret, and
  * only then does `handleUpload` hand back a short-lived token scoped to this
  * one upload. The PDF then streams from the browser straight to Blob storage —
  * it never passes through this server.

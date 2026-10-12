@@ -23,7 +23,7 @@ export function ResumeViewer({ resumes }: { resumes: ResumeFile[] }) {
         {resumes.length > 1 &&
           resumes.map((r, i) => (
             <button
-              key={r.filename}
+              key={r.id}
               type="button"
               onClick={() => setActive(i)}
               aria-pressed={i === active}
