@@ -9,6 +9,15 @@ function formatBytes(bytes: number): string {
   return kb < 1024 ? `${Math.round(kb)} KB` : `${(kb / 1024).toFixed(1)} MB`;
 }
 
+function formatDate(iso?: string): string {
+  if (!iso) return "";
+  const d = new Date(iso);
+  // Fixed locale + UTC so server (Vercel/UTC) and client render identically — no hydration mismatch.
+  return Number.isNaN(d.getTime())
+    ? ""
+    : d.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" });
+}
+
 const btnBase = "inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors";
 const btnPrimary = `${btnBase} bg-accent text-bg hover:bg-accent-strong`;
 const btnGhost = `${btnBase} border border-line text-text hover:border-accent/60 hover:text-accent`;
@@ -44,6 +53,10 @@ export function ResumeViewer({ resumes }: { resumes: ResumeFile[] }) {
             Open in new tab ↗
           </a>
         </div>
+
+        {formatDate(current.uploadedAt) && (
+          <p className="font-mono text-xs text-muted">Updated {formatDate(current.uploadedAt)}</p>
+        )}
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-line bg-surface-2">

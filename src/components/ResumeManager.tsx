@@ -11,6 +11,15 @@ function formatBytes(bytes: number): string {
   return kb < 1024 ? `${Math.round(kb)} KB` : `${(kb / 1024).toFixed(1)} MB`;
 }
 
+function formatDate(iso?: string): string {
+  if (!iso) return "";
+  const d = new Date(iso);
+  // Fixed locale + UTC so server and client render identically — no hydration mismatch.
+  return Number.isNaN(d.getTime())
+    ? ""
+    : d.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" });
+}
+
 /** Short, collision-safe id baked into each upload's pathname (`<id>__name.pdf`). */
 function shortId(): string {
   const uuid = typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`;
@@ -162,7 +171,8 @@ export function ResumeManager({ initial }: { initial: ResumeFile[] }) {
                 {r.file.title}
               </p>
               <p className="truncate font-mono text-xs text-muted">
-                {r.file.filename} · {formatBytes(r.file.size)} · id {r.file.id}
+                {r.file.filename} · {formatBytes(r.file.size)}
+                {formatDate(r.file.uploadedAt) && ` · updated ${formatDate(r.file.uploadedAt)}`} · id {r.file.id}
               </p>
             </div>
             <button
