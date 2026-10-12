@@ -20,6 +20,7 @@ npm run dev          # http://localhost:3000
 | `npm run start` | Serve the production build |
 | `npm run lint` | ESLint |
 | `npm test` | Playwright tests (desktop + mobile); run `npx playwright install chromium` once first |
+| `npm run resume:upload` | Upload resume PDF(s) to the Blob store (see "Update the resume") |
 
 ## Where things live
 
@@ -31,7 +32,11 @@ npm run dev          # http://localhost:3000
 | `src/content/notes/*.mdx` | Note bodies (Markdown + React components) |
 | `src/components/demos/` | Interactive demos (grid demo, memo demo) |
 | `src/mdx-components.tsx` | Components available inside notes |
-| `public/resume/` | Resume PDFs |
+| `public/resume/` | Resume PDFs (local dev fallback / seed for the Blob store) |
+| `src/lib/resume.ts` | Lists resumes from the Blob store, falling back to `public/resume/` |
+| `src/app/resume/page.tsx` | Resume page — inline preview + download |
+| `src/app/resume/manage/page.tsx` | Password-gated drag-drop upload page (`noindex`) |
+| `src/app/api/resume/upload/route.ts` | Vends short-lived client-upload tokens after checking `RESUME_ADMIN_SECRET` |
 
 ## Add a study note
 
@@ -42,6 +47,25 @@ npm run dev          # http://localhost:3000
 ## Add or edit a case study
 
 Edit `src/content/projects.ts`. Only use facts and numbers you can verify.
+
+## Update the resume
+
+The `/resume` page previews and lists PDFs live from a [Vercel Blob](https://vercel.com/docs/storage/vercel-blob) store (prefix `resume/`), so updates appear **without a redeploy**. Any PDF in the store is picked up automatically; the version label comes from the filename.
+
+**One-time setup**
+
+1. On Vercel: **Storage → Create Database → Blob**, and connect it to this project.
+2. Pull the token locally: `vercel env pull .env.local` (creates `.env.local` with `BLOB_READ_WRITE_TOKEN`). See `.env.example`.
+3. Set `RESUME_ADMIN_SECRET` to a long random string — in `.env.local` and in Vercel (**Settings → Environment Variables**). This is the password for the in-browser upload page below.
+4. Seed it from the PDFs already in the repo: `npm run resume:upload`.
+
+**To update later** — any of:
+
+- **In-browser (easiest):** visit [`/resume/manage`](https://portfolio.prvnsahni.com/resume/manage), enter `RESUME_ADMIN_SECRET`, and drag a PDF in. It uploads straight from the browser to Blob (the server only vends a short-lived token after checking the password) and goes live immediately. The page is `noindex`.
+- Drop the PDF into the Blob store from the Vercel dashboard (**Storage → your store → Upload**), or
+- Run `npm run resume:upload -- ./path/to/Resume.pdf` (re-uploading the same filename replaces it).
+
+Re-uploading the same filename overwrites it in place, so the resume title stays stable. Locally, with no token set, the `/resume` page falls back to the PDFs in `public/resume/`.
 
 ## Deploy to portfolio.prvnsahni.com (Vercel)
 

@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "test": "playwright test",
-    "test:ui": "playwright test --ui"
+    "test:ui": "playwright test --ui",
+    "resume:upload": "node scripts/upload-resume.mjs"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.1.1",
@@ -16,6 +17,7 @@
     "@next/mdx": "^16.3.7",
     "@tanstack/react-virtual": "^3.14.13",
     "@types/mdx": "^2.0.14",
+    "@vercel/blob": "^2.8.0",
     "geist": "^1.7.2",
     "next": "16.3.7",
     "react": "19.2.8",
